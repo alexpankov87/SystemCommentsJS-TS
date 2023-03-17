@@ -23,7 +23,6 @@ window.addEventListener("DOMContentLoaded", (e) => {
   }
 
   let textarea = document.getElementById("text_area");
-
   let count = document.getElementById("count_display");
   let btn = document.querySelector(".btn-submit");
   let btn_answer = document.getElementById("btn-answer");
@@ -38,6 +37,11 @@ window.addEventListener("DOMContentLoaded", (e) => {
   let minus = document.getElementById("minus");
   let minus_anwer = document.getElementById("minus_anwer");
   let plus_answer = document.getElementById("plus_answer");
+  let countNew;
+  let plusTest;
+  let minusTest;
+  let counter = 0;
+  let conterComments = 0;
 
   let comments = [];
   loadComments();
@@ -55,6 +59,7 @@ window.addEventListener("DOMContentLoaded", (e) => {
       title: userName.textContent,
       comment: textarea.value,
       time: Math.floor(Date.now() / 1000),
+      counter: counter,
     };
     textarea.value = "";
     if (correctly) {
@@ -85,7 +90,7 @@ window.addEventListener("DOMContentLoaded", (e) => {
     newComment.classList.add("answer-comments-wrapper");
     let out = "";
 
-    comments.forEach(function (item) {
+    comments.forEach((item) => {
       out += `<div class="img-wrapper-answer">
                         <img class="img-avatar" src=${item.img}></img>
                 </div>
@@ -95,7 +100,7 @@ window.addEventListener("DOMContentLoaded", (e) => {
                         <span class="date-time">${timeConverter(item.time)}
                             </span>
                         </div>
-                        <span class="text-message">${item.comment}</span>
+                        <span  class="text-message">${item.comment}</span>
                         <div class="favorite-answer-block">
                                 <div class="answer">
                                     <button id="btn-answer">
@@ -109,11 +114,13 @@ window.addEventListener("DOMContentLoaded", (e) => {
                                     <span> &#10084; В избранном </span>
                                 </div>
                                 <div class="plus-minus-comments">
-                                    <button id="minus" class="minus">
+                                    <button id="minus-test" class="minus">
                                         <span> &#8722; </span>
                                     </button>
-                                    <span id="count_average" class="count"> 0 </span>
-                                    <button id="plus" class="plus">
+                                    <span id="count_new" class="count">
+                                      ${item.counter}
+                                    </span>
+                                    <button id="plus-test" class="plus">
                                         <span> &#43; </span>
                                     </button>
                                 </div>
@@ -121,7 +128,27 @@ window.addEventListener("DOMContentLoaded", (e) => {
                 </div>
                 `;
     });
+
     newComment.innerHTML = out;
+    if ((newComment.innerHTML = out)) {
+      plusTest = document.querySelector("#plus-test");
+      minusTest = document.querySelector("#minus-test");
+      countNew = document.querySelector("#count_new");
+      minusTest.addEventListener("click", minusCounter);
+      plusTest.addEventListener("click", plusCounter);
+    }
+  }
+  // function plusCounter() {
+  //   counter++;
+  //   count_display.textContent = counter;
+  // }
+  function minusCounter() {
+    counter--;
+    countNew.textContent = counter;
+  }
+  function plusCounter() {
+    counter++;
+    countNew.textContent = counter;
   }
 
   function timeConverter(UNIX_timestamp) {
@@ -162,8 +189,6 @@ window.addEventListener("DOMContentLoaded", (e) => {
     count.innerHTML = `${length.length}` + divElement.textContent;
   });
   //Count
-
-  let counter = 0;
 
   plus_answer.addEventListener("click", () => {
     counter++;
