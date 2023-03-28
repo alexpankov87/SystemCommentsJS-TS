@@ -25,7 +25,7 @@ window.addEventListener("DOMContentLoaded", (e) => {
   let textarea = document.getElementById("text_area");
   let count = document.getElementById("count_display");
   let btn = document.querySelector(".btn-submit");
-  let btn_answer = document.getElementById("btn-answer");
+
   let comment_add = document.getElementById("comment-add");
   let userName = document.getElementById("user-name");
   let userImage = document.querySelector(".img-wrapper");
@@ -38,8 +38,10 @@ window.addEventListener("DOMContentLoaded", (e) => {
   let minus_anwer = document.getElementById("minus_anwer");
   let plus_answer = document.getElementById("plus_answer");
   let countNew;
+  let btnAnswer;
   let plusTest;
   let minusTest;
+  let reAnwerCommentBlock;
   let counter = 0;
   let conterComments = 0;
 
@@ -103,7 +105,7 @@ window.addEventListener("DOMContentLoaded", (e) => {
                         <span  class="text-message">${item.comment}</span>
                         <div class="favorite-answer-block">
                                 <div class="answer">
-                                    <button id="btn-answer">
+                                    <button id="btn-reanswer">
                                         <img src="css/img/Mask group.svg" alt="answer">
                                         <span>
                                             Ответить
@@ -124,24 +126,45 @@ window.addEventListener("DOMContentLoaded", (e) => {
                                         <span> &#43; </span>
                                     </button>
                                 </div>
-                        </div>   
+                        </div>
+                        <div class="reanswer" id="reanswer"></div>   
                 </div>
                 `;
     });
 
     newComment.innerHTML = out;
+
     if ((newComment.innerHTML = out)) {
       plusTest = document.querySelector("#plus-test");
       minusTest = document.querySelector("#minus-test");
       countNew = document.querySelector("#count_new");
+      btnAnswer = document.querySelector("#btn-reanswer");
+
       minusTest.addEventListener("click", minusCounter);
       plusTest.addEventListener("click", plusCounter);
+      btnAnswer.addEventListener("click", answerComments);
     }
   }
-  // function plusCounter() {
-  //   counter++;
-  //   count_display.textContent = counter;
-  // }
+
+  function answerComments() {
+    reAnwerCommentBlock = document.querySelector("#reanswer");
+    inputAnswer = document.querySelector("#answerInput");
+    if (reAnwerCommentBlock !== null && inputAnswer === null) {
+      let inputAnswer = document.createElement("textarea");
+      inputAnswer.classList.add("text-area");
+      inputAnswer.type = "text";
+      inputAnswer.name = "answerInput";
+      inputAnswer.value = "";
+      inputAnswer.id = "answerInput";
+      inputAnswer.placeholder = "Введите текст сообщения...";
+      inputAnswer.classList.add("focus");
+
+      reAnwerCommentBlock.appendChild(inputAnswer);
+    } else {
+      console.log("Элемент не найден на странице.");
+    }
+  }
+
   function minusCounter() {
     counter--;
     countNew.textContent = counter;
