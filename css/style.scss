@@ -299,7 +299,18 @@ textarea:focus {
   cursor: pointer;
   background: #abd873;
 }
-
+.btn-answer-question {
+  margin-top: 20px;
+  margin-left: 10px;
+  background: #a2a2a2;
+  border-radius: 5px;
+  padding: 20px 29px 20px 29px;
+  border: none;
+}
+.btn-answer-question:hover {
+  cursor: pointer;
+  background: #abd873;
+}
 .row-col > button > span {
   font-weight: 400;
   font-size: 18px;

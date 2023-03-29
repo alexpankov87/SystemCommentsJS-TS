@@ -37,15 +37,20 @@ window.addEventListener("DOMContentLoaded", (e) => {
   let minus = document.getElementById("minus");
   let minus_anwer = document.getElementById("minus_anwer");
   let plus_answer = document.getElementById("plus_answer");
+  let reanswerImg = document.querySelector(".reanswer-img");
+  let imgReAnswImgAvatar = reanswerImg.getAttribute("src");
+  let buttonSend;
   let countNew;
   let btnAnswer;
   let plusTest;
   let minusTest;
   let reAnwerCommentBlock;
   let counter = 0;
-  let conterComments = 0;
+  let reAnswerBlock;
+  let blockAnswerComments;
 
   let comments = [];
+
   loadComments();
   let { length } = textarea.value;
 
@@ -64,9 +69,12 @@ window.addEventListener("DOMContentLoaded", (e) => {
       counter: counter,
     };
     textarea.value = "";
+
     if (correctly) {
+      comment_add.disabled = true;
       count.innerHTML = "Слишком длинное сообщение";
     } else {
+      comment_add.disabled = false;
       if (length != 0) {
         comments.push(comment);
 
@@ -127,7 +135,10 @@ window.addEventListener("DOMContentLoaded", (e) => {
                                     </button>
                                 </div>
                         </div>
-                        <div class="reanswer" id="reanswer"></div>   
+                        <div class="reanswer" id="reanswer">
+                            
+                        </div>
+                        <div id="block-send-answer"></div>
                 </div>
                 `;
     });
@@ -142,27 +153,140 @@ window.addEventListener("DOMContentLoaded", (e) => {
 
       minusTest.addEventListener("click", minusCounter);
       plusTest.addEventListener("click", plusCounter);
-      btnAnswer.addEventListener("click", answerComments);
+      btnAnswer.addEventListener("click", addAnswer);
     }
   }
 
-  function answerComments() {
+  function addAnswer() {
     reAnwerCommentBlock = document.querySelector("#reanswer");
-    inputAnswer = document.querySelector("#answerInput");
-    if (reAnwerCommentBlock !== null && inputAnswer === null) {
-      let inputAnswer = document.createElement("textarea");
+    let inputAnswer;
+
+    if (
+      reAnwerCommentBlock !== null &&
+      reAnwerCommentBlock.children.length === 0
+    ) {
+      inputAnswer = document.createElement("textarea");
+      inputAnswer.id = "answerInput";
       inputAnswer.classList.add("text-area");
       inputAnswer.type = "text";
       inputAnswer.name = "answerInput";
       inputAnswer.value = "";
-      inputAnswer.id = "answerInput";
       inputAnswer.placeholder = "Введите текст сообщения...";
       inputAnswer.classList.add("focus");
 
       reAnwerCommentBlock.appendChild(inputAnswer);
     } else {
-      console.log("Элемент не найден на странице.");
+      throw new Error();
     }
+
+    reAnswerBlock = document.querySelector("#block-send-answer");
+    if (reAnswerBlock !== null && reAnswerBlock.children.length === 0) {
+      buttonSend = document.createElement("button");
+      buttonSend.id = "btn-send-message";
+      buttonSend.type = "submit";
+      buttonSend.textContent = "Отправить";
+      buttonSend.classList.add("btn-answer-question");
+      reAnswerBlock.appendChild(buttonSend);
+    } else {
+      throw new Error();
+    }
+    buttonSend.addEventListener("click", () => {
+      let textValueAnswer = inputAnswer.value;
+      //let correct = textValueAnswer > max;
+
+      //correct ||
+      event.preventDefault();
+      let comment2 = {
+        img: imgReAnswImgAvatar,
+        title: userName.textContent,
+        comment: textValueAnswer,
+        time: Math.floor(Date.now() / 1000),
+        counter: counter,
+      };
+
+      textValueAnswer = "";
+      //   if (correct) {
+      //     buttonSend.disabled = true;
+      //   } else {
+      //     if (textValueAnswer != 0) {
+      comments.push(comment2);
+
+      saveComments();
+      showAnswerComments();
+      console.log(comments);
+      //     }
+      //   }
+    });
+  }
+
+  function showAnswerComments() {
+    blockAnswerComments = document.getElementById("answer-question-block");
+    //blockAnswerComments.classList.add("reanswer-comments");
+    let output = "";
+    Object.keys(comments[1]).forEach((item) => {
+      output += `<div class="reanswer-img-wrapper">
+                            <img src="${item.img}" alt="avatar">
+                        </div>
+                        <div class="reanswer-text-block">
+                            <div class="title-comments">
+                                <label for="user-name">Джунбокс3000</label>
+                                <svg id="user-svg" width="22" height="22" viewBox="0 0 22 22" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <g opacity="0.4">
+                                        <mask id="mask0_3_259" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0"
+                                            y="0" width="22" height="22">
+                                            <rect width="22" height="22" fill="url(#pattern0)" />
+                                        </mask>
+                                        <g mask="url(#mask0_3_259)">
+                                            <rect x="-2" y="-1" width="26" height="25" fill="black" />
+                                        </g>
+                                    </g>
+                                    <defs>
+                                        <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1"
+                                            height="1">
+                                            <use xlink:href="#image0_3_259" transform="scale(0.01)" />
+                                        </pattern>
+                                        <image id="image0_3_259" width="100" height="100"
+                                            xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAABmJLR0QA/wD/AP+gvaeTAAAEvElEQVR4nO2cW4hVVRiAvzONFOOMRWMD6aA1E4OJBVEveQHD7KGHSKiHoKIQAiPQCOshovAlXyL0pZdQH9QuFEQWEdHV7lEYJVFmiZYYRNNNytIzPfxn8njmXNZeZ+3173X2/8HPzJlhzvnX/82+rfXvDYZhGIZhGIZhFIz12gkYwhDwNDClnYgBVwAHEBkmRJnbgeOclmFClBgEdnGmCBOixCLgC5rLMCGRuQ34k9YyTEgkzgG20F6ECYnEBLAPNxkmJGfWAJO4yzAhOXE27rsoE5IzC4AP8JNhQgJzA/AL/jJMSCD6gc1Ale5kmJAAjALv0r0IExKAVcAxwskwIZ6cBTwCnCKsDBPiwQjwGuFFmBAPVgJHyU+GCXGkAjwAnCRfGSbEgbnAK+QvohRCKl3+/QrgKWB+gFxc+R34rRa/1n1/DPi2Lg4jJxWloALcD/xLvC0ja5wAvgJ2AncDlwF9eRRDm/OBPegX3CcmgZeBjcDFoQujwZXAQfQLGyr2I9dLl4QsUizWI7sB7SLmEVVgL3ATclFbaOqb1MoQ3yH/fLNDFC80jU1qZYqfgQeR9f5C0KxJrYxxpFYLNdo1qZU5XgeWdFFXL5Yg5+7agy9qnADupfsLaidcmtQsJF4Ehv3K3JksTWoWp+MIsNyj3m3pQza/wdBvXAJGgTfJ8YBvuyy/qAL3edTbiU6d5xatY7NHvZ2w017/2OJRb2fswtAvHvIptitlnjrxjSpwh0+xXRkCninAQFOKf4DrfIqdhbvo3en3PGKSCItgVyHT09qDTSU+AmZ5VToD5wLPKQ80pXjUr8zZmO7DKnKTQ1HiFNLjHIUVwA85D6gX4gCOC10hppFHkFab1QHey4UBZHBzkP3zeUiz3gW1uBBYCIwB47XfF4FNwMOxPqyv9mFFbCUdBq5B1jF2AF8S5sahrPE3csdxVFYBP3WZeGghzRhGbq97DGkFiiXlpUD5Z2Ie8LZHsjGFNDKOdJq8R/5bz9KcxtCWfuR0L4/B5c04svs9nEPuU8AbEcbQkuuRdpqUhEzTjzTO7Q2c/xQRT4ObMYrsClITUs8ywvYzvxo3/ZnMAh4n/duiryXMAl4VWBw596asQe7pSFUIyK7sHuQ+lW7G8UTsxFsxDnxKukKmWYjsenzHcRyZFywEvfLwmQrd3RWwNn7K7bkF+IN0hUxzNX4PSHhLI9lOTACfk7YQkMWor8l+cC/knVwDwHbSFgIy0foJ2aRsVMnUkTvp3OlSdAaRTnlXIe/opOnOpciMbKpCQBpDPsNNyElk+aDQDAG7SVcIyLrMIdyk3KqUY2bWIesIKQoB2dpdnqC3TStBH1J/GP+NdBZyUC07T+YAz5KmEIAn6SxlgVp2nlSADdpJeDJI55bcm9WyKykraS9kk15q5eV5Wgt5QTGv0jLGzLPGZA/svcJWWs9rDSnmVVouonUL7tKefKBXwTmEHEuaMWFCdNja4ufzTYgO7wPfNPn5vMI/rKuHmYtcm9RzVCMRQ7icmQf1j1UzKjkV4EfOFPK9HUP0mEJWFuuZbUJ0+bDh9YAJ0WVfw+sBlSyM/xmh4cAe5VF1RlvGal//QiYeDcMwDMMwDMMwDMMwjOb8B7T5oNqqo7gkAAAAAElFTkSuQmCC" />
+                                    </defs>
+                                </svg>
+                                <div class="user-answer">
+                                    <span>Максим Авдеенко</span>
+                                </div>
+                                <div class="time-date-comments">
+                                    <span>
+                                        ${timeConverter(item.time)}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="answer-user-comments">
+                                <span>
+                                   ${item.comment}
+                                </span>
+                            </div>
+                            <div class="favorite-answer-block">
+                                <div class="favourites-heart">
+                                    <button>
+                                        <span> В избранном </span>
+                                        </button>
+                                </div>
+                                
+                                <div class="plus-minus-comments">
+                                    <button id="minus_anwer" class="minus">
+                                        <span> &#8722; </span>
+                                    </button>
+                                    <span id="count_answer" class="count">
+                                        ${item.counter}
+                                    </span>
+                                    <button id="plus_answer" class="plus">
+                                        <span> &#43; </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>`;
+    });
+    blockAnswerComments.innerHTML = output;
+    console.log(blockAnswerComments);
   }
 
   function minusCounter() {
