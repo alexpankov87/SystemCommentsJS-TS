@@ -192,9 +192,7 @@ window.addEventListener("DOMContentLoaded", (e) => {
     }
     buttonSend.addEventListener("click", () => {
       let textValueAnswer = inputAnswer.value;
-      //let correct = textValueAnswer > max;
 
-      //correct ||
       event.preventDefault();
       let comment2 = {
         img: imgReAnswImgAvatar,
@@ -205,23 +203,18 @@ window.addEventListener("DOMContentLoaded", (e) => {
       };
 
       textValueAnswer = "";
-      //   if (correct) {
-      //     buttonSend.disabled = true;
-      //   } else {
-      //     if (textValueAnswer != 0) {
+
       comments.push(comment2);
 
       saveComments();
       showAnswerComments();
       console.log(comments);
-      //     }
-      //   }
     });
   }
 
   function showAnswerComments() {
     blockAnswerComments = document.getElementById("answer-question-block");
-    //blockAnswerComments.classList.add("reanswer-comments");
+    blockAnswerComments.classList.add("reanswer-comments");
     let output = "";
     Object.keys(comments[1]).forEach((item) => {
       output += `<div class="reanswer-img-wrapper">
